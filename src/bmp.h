@@ -117,6 +117,23 @@ static inline __m128i overlay_blend(__m128i front, __m128i back)
 	return _mm_or_si128(_mm_add_epi8(fst, snd), mask_alpha);
 }
 
+static inline uint32_t get_pos(uint32_t mask)
+{
+	if (mask & 0xff000000) return 3;
+	if (mask & 0x00ff0000) return 2;
+	if (mask & 0x0000ff00) return 1;
+	if (mask & 0x000000ff) return 0;
+	return -1;
+}
+
+static inline uint32_t get_shuffle(dib_header_t* dib)
+{
+	return (get_pos(dib->red_mask) << 24)
+		 | (get_pos(dib->green_mask) << 16)
+		 | (get_pos(dib->blue_mask) << 8)
+		 | (get_pos(dib->alpha_mask) << 0);
+}
+
 
 
 
